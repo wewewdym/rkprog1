@@ -1,0 +1,78 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+struct Order {
+    char* name;
+    int quantity;
+    double price;
+};
+
+// Функция для сравнения двух заказов по названию
+bool compareOrders(const Order &order1, const Order &order2) {
+    return strcmp(order1.name, order2.name) < 0;
+}
+
+int main() {
+    int numOrders;
+    cout << "Введите количество заказанных товаров: ";
+    cin >> numOrders;
+
+    Order* orders = new Order[numOrders];
+
+    // Ввод информации о заказанных товарах
+    for (int i = 0; i < numOrders; i++) {
+        cin.ignore(); // Игнорируем символ новой строки после ввода числа
+
+        char name[100];
+        cout << "Введите название товара: ";
+        cin.getline(name, 100);
+
+        int quantity;
+        cout << "Введите количество единиц товара: ";
+        cin >> quantity;
+
+        double price;
+        cout << "Введите цену за единицу товара: ";
+        cin >> price;
+
+        orders[i].name = new char[strlen(name) + 1];
+        strcpy(orders[i].name, name);
+        orders[i].quantity = quantity;
+        orders[i].price = price;
+
+        double totalCost = quantity * price;
+        cout << "Общая стоимость заказа: " << totalCost << endl;
+    }
+
+    // Вычисление общей стоимости всех заказов
+    double totalCostAllOrders = 0.0;
+    for (int i = 0; i < numOrders; i++) {
+        totalCostAllOrders += orders[i].quantity * orders[i].price;
+    }
+
+    // Сортировка заказов по названию
+    for (int i = 0; i < numOrders - 1; i++) {
+        for (int j = 0; j < numOrders - i - 1; j++) {
+            if (strcmp(orders[j].name, orders[j + 1].name) > 0) {
+                swap(orders[j], orders[j + 1]);
+            }
+        }
+    }
+
+    // Вывод отсортированного списка заказанных товаров
+    cout << "Список заказанных товаров:" << endl;
+    for (int i = 0; i < numOrders; i++) {
+        cout << "Название: " << orders[i].name << ", Количество: " << orders[i].quantity << ", Цена: " << orders[i].price << endl;
+    }
+
+    cout << "Общая стоимость всех заказов: " << totalCostAllOrders << endl;
+
+    // Освобождение памяти
+    for (int i = 0; i < numOrders; i++) {
+        delete[] orders[i].name;
+    }
+    delete[] orders;
+
+    return 0;
+}
